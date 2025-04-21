@@ -2,24 +2,28 @@ import { cookies } from 'next/headers';
 import { parseExpiresInToSeconds } from '../utils/parse-expiration';
 import { ACCESS_TOKEN_NAME } from '../constants';
 import { config, isProduction } from '../config';
+import { NextResponse } from 'next/server';
 
 const maxAge = parseExpiresInToSeconds(config.jwt.expiresIn);
 
-/**
- * Sets the access token cookie.
- *
- * @param token - The access token to set in the cookie.
- */
-export const setAuthCookie = async (token: string) => {
-  const cookieStore = await cookies();
+export const authCookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  path: '/',
+  maxAge,
+  sameSite: 'lax' as const,
+};
 
-  cookieStore.set(ACCESS_TOKEN_NAME, token, {
-    httpOnly: true,
-    secure: isProduction,
-    path: '/',
-    maxAge,
-    sameSite: 'lax',
-  });
+
+/**
+ * Sets the access token cookie on the given response.
+ *
+ * @param response the response that will have the cookie set
+ * @param token the value of the access token cookie
+ */
+export const setAuthCookie = (response: NextResponse, token: string) => {
+  response.cookies.set(ACCESS_TOKEN_NAME, token, authCookieOptions);
+  return response;
 };
 
 /**

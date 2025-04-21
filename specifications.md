@@ -98,3 +98,37 @@
 - **Аутентифікація**: JWT + Cookies
 - **Зберігання зображень**: локально
 - **Хостинг**: Vercel / Netlify (frontend), Render / Railway / VPS (backend)
+
+
+/app
+│
+└── /api
+    └── /auth
+        ├── login/route.ts       # Вход пользователя
+        ├── logout/route.ts      # Выход (удаление куки)
+        ├── register/route.ts    # Регистрация пользователя
+        └── me/route.ts          # Получение текущего пользователя
+
+/lib
+│
+├── /auth
+│   ├── auth-guard.ts           # Guard-функция для SSR/API
+│   ├── cookies.ts              # Работа с HTTP-only куками
+│   ├── hash.ts                 # Хэширование и проверка паролей (bcrypt)
+│   ├── jwt.ts                  # Подпись и верификация JWT (серверная)
+│   ├── jwt-edge.ts            # JWT-валидация для middleware (Edge Runtime)
+│
+├── /utils
+│   └── parse-expiration.ts     # Функция для преобразования времени (например, '7d' -> сек)
+│
+├── config.ts                   # Конфиг приложения (jwt секрет, окружение и т.д.)
+├── constants.ts                # Константы, например, ACCESS_TOKEN_NAME
+└── schema-validation.ts        # Zod-схемы и их переиспользуемые поля
+
+/middleware.ts                  # Middleware для защиты маршрутов
+
+/types
+└── next-auth.d.ts              # (опционально) Расширение типа `NextApiRequest` или `JwtPayload`
+
+/__tests__
+└── /lib/auth/*.test.ts         # Тесты для функций из /lib/auth

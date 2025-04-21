@@ -24,7 +24,7 @@ describe('POST /api/auth/logout', () => {
     expect(response.status).toBe(200);
 
     const data = await response.json();
-    expect(data.message).toBe('Logged out successfully');
+    expect(data.message[0]).toBe('Logged out successfully');
 
     const cookies = response.cookies.get(ACCESS_TOKEN_NAME);
 

@@ -26,10 +26,14 @@ jest.mock('@/lib/auth/jwt', () => ({
 }));
 
 jest.mock('@/lib/auth/cookies', () => ({
-  setAuthCookie: jest.fn(),
+  setAuthCookie: jest.fn((res) => res),
 }));
 
 describe('POST /api/auth/register', () => {
+  beforeEach(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
   const mockUserData = {
     name: 'John Doe',
     email: 'john@example.com',
@@ -42,11 +46,6 @@ describe('POST /api/auth/register', () => {
       method: 'POST',
       body: JSON.stringify(data),
     });
-
-
-  beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(() => {});
-  });
 
   it('should return 400 if validation fails', async () => {
     const response = await POST(createRequest({}));
@@ -84,7 +83,7 @@ describe('POST /api/auth/register', () => {
       role: mockUserData.role,
     });
     expect(body.message).toEqual(['User created successfully']);
-    expect(setAuthCookie).toHaveBeenCalledWith('jwt-token');
+    expect(setAuthCookie).toHaveBeenCalledWith(expect.any(Object), 'jwt-token');
   });
 
   it('should return 500 if an unexpected error occurs', async () => {

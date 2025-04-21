@@ -18,7 +18,9 @@ jest.mock('@/lib/db', () => ({
 }));
 jest.mock('@/lib/auth/hash');
 jest.mock('@/lib/auth/jwt');
-jest.mock('@/lib/auth/cookies');
+jest.mock('@/lib/auth/cookies', () => ({
+  setAuthCookie: jest.fn((res) => res),
+}));
 
 
 const mockedFindUnique = db.user.findUnique as jest.Mock;
@@ -86,7 +88,7 @@ describe('POST /api/auth/login', () => {
     expect(response.status).toBe(200);
     const data = await response.json();
     expect(data.user).toEqual({ id: 'user-id', email: 'test@example.com', role: 'user' });
-    expect(mockedSetAuthCookie).toHaveBeenCalledWith('mocked-jwt-token');
+    expect(mockedSetAuthCookie).toHaveBeenCalledWith(expect.any(Object), 'mocked-jwt-token');
   });
 
   it('should return 500 on internal server error', async () => {

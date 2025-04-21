@@ -1,4 +1,4 @@
-import { setAuthCookie, removeAuthCookie, getAuthTokenFromCookie } from '@/lib/auth/cookies';
+import { setAuthCookie, removeAuthCookie, getAuthTokenFromCookie, authCookieOptions } from '@/lib/auth/cookies';
 import { ACCESS_TOKEN_NAME } from '@/lib/constants';
 
 
@@ -7,6 +7,7 @@ jest.mock('next/headers', () => ({
 }));
 
 import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
 describe('auth cookie helpers', () => {
   const mockCookieStore = {
@@ -20,24 +21,23 @@ describe('auth cookie helpers', () => {
     (cookies as jest.Mock).mockResolvedValue(mockCookieStore);
   });
 
-  describe('setAuthCookie', () => {
-    it('should set the access token cookie with correct options', async () => {
-      const token = 'test-token';
+  it('should set the access token cookie with correct options and return the response', () => {
+    const token = 'test-token';
+    const mockResponse = {
+      cookies: {
+        set: jest.fn(),
+      },
+    } as unknown as NextResponse;
 
-      await setAuthCookie(token);
+    const result = setAuthCookie(mockResponse, token);
 
-      expect(mockCookieStore.set).toHaveBeenCalledWith(
-        ACCESS_TOKEN_NAME,
-        token,
-        {
-          httpOnly: true,
-          secure: expect.any(Boolean),
-          path: '/',
-          maxAge: expect.any(Number),
-          sameSite: 'lax',
-        }
-      );
-    });
+    expect(mockResponse.cookies.set).toHaveBeenCalledWith(
+      ACCESS_TOKEN_NAME,
+      token,
+      authCookieOptions
+    );
+
+    expect(result).toBe(mockResponse);
   });
 
   describe('removeAuthCookie', () => {

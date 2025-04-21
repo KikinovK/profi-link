@@ -48,15 +48,15 @@ export  const POST = async (req: Request) => {
       role: user.role,
     });
 
-    await setAuthCookie(token);
-
-    return NextResponse.json(
+    const response =  NextResponse.json(
       {
         user: { id: user.id, email: user.email, role: user.role },
         message: ['User created successfully'],
       },
       { status: 201 }
     );
+
+    return setAuthCookie(response, token);
   } catch (error) {
     console.error('Register error:', error);
     return NextResponse.json({ error: ['Internal Server Error'] }, { status: 500 });

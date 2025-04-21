@@ -1,12 +1,10 @@
 import { verifyJwt } from './jwt';
 import { Role } from '@prisma/client';
-import { cookies } from 'next/headers';
-import { ACCESS_TOKEN_NAME } from '../constants';
+import { getAuthTokenFromCookie } from './cookies';
 
 
 export const authGuard = async (allowedRoles: Role[] = []) => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(ACCESS_TOKEN_NAME)?.value;
+  const token = await getAuthTokenFromCookie();
 
   if (!token) {
     throw new Error('Not authenticated');

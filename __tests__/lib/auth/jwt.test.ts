@@ -8,6 +8,11 @@ jest.mock('jsonwebtoken', () => ({
 }));
 
 describe('JWT Helpers', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
   const payload = {
     userId: 1,
     email: 'test@example.com',
