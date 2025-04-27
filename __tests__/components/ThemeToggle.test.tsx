@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import ThemeToggle from '@/components/ThemeToggle';
+import ThemeToggle from '@/components/layout/ThemeToggle';
 
 
 const setDocumentCookie = (value: string) => {
