@@ -39,13 +39,15 @@ const ThemeToggle = () => {
 
   return (
     <div className="flex items-center space-x-2">
-      <Sun className="h-5 w-5 text-yellow-500 dark:text-gray-400 transition-colors" />
+
       <Switch
         checked={theme === 'dark'}
         onCheckedChange={toggleTheme}
         className="cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+        iconOn={<Moon className="transition-colors" />}
+        iconOff={<Sun className="transition-colors" />}
       />
-      <Moon className="h-5 w-5 text-gray-700 dark:text-yellow-300 transition-colors" />
+
     </div>
   );
 }
